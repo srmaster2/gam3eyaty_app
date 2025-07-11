@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>جمعيّاتي - التطبيق الشامل</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- شاشة تسجيل الدخول -->
+    <div id="auth-container" class="auth-container">
+      <div class="auth-card">
+        <h1 class="auth-title">🏛️ جمعيّاتي</h1>
+        <p style="text-align: center; margin-bottom: 30px; color: #666;">
+          إدارة الجمعيات المالية بسهولة وأمان
+        </p>
+        
+        <button class="auth-btn google" onclick="signInWithGoogle()">
+          <span>🔍</span>
+          تسجيل الدخول بحساب جوجل
+        </button>
+        
+        <button class="auth-btn phone" onclick="signInWithPhone()">
+          <span>📱</span>
+          تسجيل الدخول برقم الهاتف
+        </button>
+        
+        <button class="auth-btn email" onclick="signInWithEmail()">
+          <span>📧</span>
+          تسجيل الدخول بالبريد الإلكتروني
+        </button>
+      </div>
+    </div>
+
+    <!-- التطبيق الرئيسي -->
+    <div id="main-app" class="main-app">
+      <div class="header">
+        <div class="header-left">
+          <h1>🏛️ جمعيّاتي</h1>
+          <span id="greeting">أهلاً بك!</span>
+        </div>
+        <div class="header-right">
+          <button class="theme-toggle" onclick="toggleTheme()" title="تغيير الوضع">
+            <span id="theme-icon">🌙</span>
+          </button>
+          <div class="user-info">
+            <div class="user-avatar" id="user-avatar">👤</div>
+            <span id="user-name">المستخدم</span>
+          </div>
+          <button class="btn btn-danger" onclick="signOut()">خروج</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- الصفحة الرئيسية -->
+        <div id="dashboard-view" class="view active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="total-groups">0</div>
+              <div class="stat-label">إجمالي الجمعيات</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="active-groups">0</div>
+              <div class="stat-label">الجمعيات النشطة</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="total-members">0</div>
+              <div class="stat-label">إجمالي الأعضاء</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="total-amount">0</div>
+              <div class="stat-label">إجمالي المبلغ (ج.م)</div>
+            </div>
+          </div>
+
+          <!-- العد التنازلي -->
+          <div id="countdown-container" class="countdown-container" style="display: none;">
+            <h3>⏰ العد التنازلي للدورة القادمة</h3>
+            <div class="countdown-timer" id="countdown-timer"></div>
+            <p id="countdown-group"></p>
+          </div>
+
+          <!-- الإنجازات -->
+          <div class="chart-container">
+            <h3>🏆 الإنجازات</h3>
+            <div class="achievements-grid" id="achievements-grid"></div>
+          </div>
+
+          <!-- اقتراحات الذكاء الاصطناعي -->
+          <div id="ai-suggestions" class="ai-suggestion" style="display: none;">
+            <h3>🧠 اقتراحات ذكية</h3>
+            <div id="ai-content"></div>
+          </div>
+
+          <!-- إشعارات WhatsApp -->
+          <div id="whatsapp-section" class="whatsapp-container" style="display: none;">
+            <h3>📱 إشعارات WhatsApp</h3>
+            <p>إرسال تذكيرات تلقائية للأعضاء</p>
+            <button class="whatsapp-button" onclick="sendWhatsAppReminders()">
+              إرسال تذكيرات الآن
+            </button>
+          </div>
+
+          <!-- الجمعيات -->
+          <div class="chart-container">
+            <h3>📊 جمعياتي</h3>
+            <div id="groups-container">
+              <div class="loading">
+                <div class="spinner"></div>
+              </div>
+            </div>
+            <button class="btn btn-success" onclick="showView('create-view')">
+              ➕ إنشاء جمعية جديدة
+            </button>
+          </div>
+        </div>
+
+        <!-- إنشاء جمعية جديدة -->
+        <div id="create-view" class="view">
+          <h2>إنشاء جمعية جديدة</h2>
+          <form id="create-form">
+            <input type="text" id="group-name" placeholder="اسم الجمعية" class="input-field" required />
+            <input type="number" id="group-members" placeholder="عدد الأعضاء" class="input-field" min="2" required />
+            <input type="number" id="group-amount" placeholder="المبلغ الشهري" class="input-field" min="1" required />
+            <input type="date" id="group-date" class="input-field" required />
+            <input type="number" id="group-duration" placeholder="المدة (عدد الشهور)" class="input-field" min="2" required />
+            
+            <label style="margin: 10px 0; display: block;">نوع الجمعية:</label>
+            <select id="group-type" class="input-field">
+              <option value="auto">تلقائية (ترتيب عشوائي)</option>
+              <option value="manual">يدوية (ترتيب محدد)</option>
+              <option value="firstcome">أول من يسجل</option>
+            </select>
+
+            <label style="margin: 10px 0; display: block;">الخصوصية:</label>
+            <select id="group-privacy" class="input-field">
+              <option value="private">خاصة (دعوة فقط)</option>
+              <option value="public">عامة (يمكن الانضمام)</option>
+            </select>
+
+            <div style="margin: 20px 0;">
+              <button type="button" class="btn btn-success" onclick="createGroup()">إنشاء الجمعية</button>
+              <button type="button" class="btn" onclick="showView('dashboard-view')">إلغاء</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- تفاصيل الجمعية -->
+        <div id="detail-view" class="view">
+          <div id="group-details"></div>
+        </div>
+
+        <!-- إضافة عضو -->
+        <div id="add-member-view" class="view">
+          <h2>إضافة عضو جديد</h2>
+          <form id="member-form">
+            <input type="text" id="member-name" placeholder="اسم العضو" class="input-field" required />
+            <input type="tel" id="member-phone" placeholder="رقم الهاتف" class="input-field" required />
+            <input type="email" id="member-email" placeholder="البريد الإلكتروني (اختياري)" class="input-field" />
+            <input type="number" id="member-order" placeholder="ترتيب القبض (اختياري)" class="input-field" min="1" />
+            
+            <label style="margin: 10px 0; display: block;">الصلاحيات:</label>
+            <select id="member-role" class="input-field">
+              <option value="member">عضو</option>
+              <option value="admin">مشرف</option>
+            </select>
+
+            <div style="margin: 20px 0;">
+              <button type="button" class="btn btn-success" onclick="addMember()">إضافة العضو</button>
+              <button type="button" class="btn" onclick="showView('detail-view')">إلغاء</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- التقارير والإحصائيات -->
+        <div id="reports-view" class="view">
+          <h2>📈 التقارير والإحصائيات</h2>
+          <div class="chart-container">
+            <h3>📊 نسبة السداد</h3>
+            <canvas id="payment-chart"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h3>⏰ إحصائيات التأخير</h3>
+            <canvas id="delay-stats"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h3>📅 الملخص الشهري</h3>
+            <canvas id="monthly-summary"></canvas>
+          </div>
+        </div>
+
+        <!-- الإشعارات -->
+        <div id="notifications-view" class="view">
+          <h2>🔔 الإشعارات</h2>
+          <div id="notifications-container"></div>
+          <button class="btn btn-success" onclick="clearNotifications()">مسح الكل</button>
+        </div>
+      </div>
+
+      <!-- شريط التنقل -->
+      <div class="navigation">
+        <button class="nav-btn active" data-view="dashboard-view" onclick="showView('dashboard-view')">
+          <span class="nav-icon">🏠</span> الرئيسية
+        </button>
+        <button class="nav-btn" data-view="create-view" onclick="showView('create-view')">
+          <span class="nav-icon">➕</span> إنشاء
+        </button>
+        <button class="nav-btn" data-view="reports-view" onclick="showView('reports-view')">
+          <span class="nav-icon">📈</span> التقارير
+        </button>
+        <button class="nav-btn" data-view="notifications-view" onclick="showView('notifications-view')">
+          <span class="nav-icon">🔔</span> الإشعارات
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
