@@ -1,6 +1,6 @@
 let currentGroupId = null;
 
-// Theme Toggle
+// تغيير الوضع (ليلي/نهاري)
 function toggleTheme() {
   const body = document.body;
   const themeIcon = document.getElementById('theme-icon');
@@ -10,14 +10,14 @@ function toggleTheme() {
   localStorage.setItem('theme', isDark ? 'light' : 'dark');
 }
 
-// Initialize Theme
+// تهيئة الوضع
 function initTheme() {
   const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   document.body.setAttribute('data-theme', savedTheme);
   document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
 }
 
-// View Switching
+// تبديل العروض
 function showView(viewId) {
   document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
   document.getElementById(viewId).classList.add('active');
@@ -25,10 +25,9 @@ function showView(viewId) {
   document.querySelector(`.nav-btn[data-view="${viewId}"]`)?.classList.add('active');
 }
 
-// Authentication (Placeholder)
+// تسجيل الدخول (محاكاة)
 function signInWithGoogle() {
   showNotification('جاري تسجيل الدخول بحساب جوجل...', 'info');
-  // Simulate successful login
   setTimeout(() => {
     document.getElementById('auth-container').style.display = 'none';
     document.getElementById('main-app').classList.add('active');
@@ -38,7 +37,6 @@ function signInWithGoogle() {
 
 function signInWithPhone() {
   showNotification('جاري تسجيل الدخول برقم الهاتف...', 'info');
-  // Simulate successful login
   setTimeout(() => {
     document.getElementById('auth-container').style.display = 'none';
     document.getElementById('main-app').classList.add('active');
@@ -48,7 +46,6 @@ function signInWithPhone() {
 
 function signInWithEmail() {
   showNotification('جاري تسجيل الدخول بالبريد الإلكتروني...', 'info');
-  // Simulate successful login
   setTimeout(() => {
     document.getElementById('auth-container').style.display = 'none';
     document.getElementById('main-app').classList.add('active');
@@ -62,17 +59,17 @@ function signOut() {
   document.getElementById('main-app').classList.remove('active');
 }
 
-// Notifications
+// الإشعارات
 function showNotification(message, type) {
   const notification = document.createElement('div');
   notification.className = `notification ${type} show`;
   notification.textContent = message;
   document.body.appendChild(notification);
-  // Add to notifications view
+  // إضافة إلى شاشة الإشعارات
   const notificationsContainer = document.getElementById('notifications-container');
   const notificationItem = document.createElement('div');
   notificationItem.className = `notification ${type}`;
-  notificationItem.textContent = `${new Date().toLocaleString()}: ${message}`;
+  notificationItem.textContent = `${new Date().toLocaleString('ar-EG')}: ${message}`;
   notificationsContainer.prepend(notificationItem);
   setTimeout(() => {
     notification.classList.remove('show');
@@ -85,7 +82,7 @@ function clearNotifications() {
   showNotification('تم مسح جميع الإشعارات', 'success');
 }
 
-// Create Group
+// إنشاء جمعية
 function createGroup() {
   const name = document.getElementById('group-name').value;
   const members = document.getElementById('group-members').value;
@@ -112,7 +109,6 @@ function createGroup() {
     status: 'active'
   };
 
-  // Simulate API call
   showNotification('تم إنشاء الجمعية بنجاح!', 'success');
   addGroupToList(group);
   updateStats();
@@ -121,10 +117,10 @@ function createGroup() {
   document.getElementById('create-form').reset();
 }
 
-// Add Group to List
+// إضافة جمعية للقائمة
 function addGroupToList(group) {
   const groupsContainer = document.getElementById('groups-container');
-  groupsContainer.innerHTML = ''; // Clear loading spinner
+  groupsContainer.innerHTML = '';
   const groupCard = document.createElement('div');
   groupCard.className = 'group-card';
   groupCard.innerHTML = `
@@ -142,18 +138,18 @@ function addGroupToList(group) {
   groupsContainer.appendChild(groupCard);
 }
 
-// Share Group
+// مشاركة الجمعية
 function shareGroup(groupId, privacy) {
   if (privacy === 'private') {
     showNotification('تم إنشاء رابط دعوة للجمعية الخاصة', 'info');
-    // Generate invite link (requires backend)
+    // هنا لازم تضيف رابط دعوة من الباك-إند
   } else {
     showNotification('تم مشاركة الجمعية العامة', 'info');
-    // Share public group link
+    // هنا رابط مشاركة عام
   }
 }
 
-// Show Group Details
+// عرض تفاصيل الجمعية
 function showGroupDetails(groupId) {
   currentGroupId = groupId;
   showView('detail-view');
@@ -173,11 +169,10 @@ function showGroupDetails(groupId) {
       <button class="btn" onclick="showView('dashboard-view')">رجوع</button>
     </div>
   `;
-  // Mock member data
   addMemberToList({ name: 'أحمد محمد', phone: '0123456789', email: 'ahmed@example.com', role: 'member', status: 'paid', order: 1 });
 }
 
-// Add Member
+// إضافة عضو
 function addMember() {
   const name = document.getElementById('member-name').value;
   const phone = document.getElementById('member-phone').value;
@@ -198,7 +193,7 @@ function addMember() {
   document.getElementById('member-form').reset();
 }
 
-// Add Member to List
+// إضافة عضو للقائمة
 function addMemberToList(member) {
   const membersList = document.getElementById('members-list');
   const memberItem = document.createElement('div');
@@ -221,24 +216,24 @@ function addMemberToList(member) {
   membersList.appendChild(memberItem);
 }
 
-// Remove Member
+// حذف عضو
 function removeMember(phone) {
   showNotification(`تم حذف العضو ${phone}`, 'success');
-  // Update UI or backend
+  // هنا تحديث الواجهة أو الباك-إند
 }
 
-// WhatsApp Reminders
+// إشعارات WhatsApp
 function sendWhatsAppReminders() {
   showNotification('تم إرسال تذكيرات WhatsApp لجميع الأعضاء!', 'success');
-  // Implement WhatsApp API integration
+  // هنا تكامل مع واتساب API
 }
 
 function sendWhatsAppReminder(phone, message = 'تذكير: يرجى سداد قسط الجمعية.') {
   showNotification(`تم إرسال تذكير إلى ${phone}`, 'success');
-  // Implement WhatsApp API integration
+  // هنا تكامل مع واتساب API
 }
 
-// Countdown Timer
+// العد التنازلي
 function startCountdown(date) {
   const countdownContainer = document.getElementById('countdown-container');
   const countdownTimer = document.getElementById('countdown-timer');
@@ -251,7 +246,7 @@ function startCountdown(date) {
     if (timeLeft <= 0) {
       clearInterval(interval);
       countdownTimer.textContent = 'انتهى الموعد!';
-      showNotification('انتهت الدورة الحالية!', 'info');
+      showNotification('انتهت الدورة الحالية! اقتراح: إعادة تشغيل الجمعية؟', 'info');
       return;
     }
     const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
@@ -264,7 +259,7 @@ function startCountdown(date) {
       <span class="countdown-unit"><span class="countdown-value">${minutes}</span><span class="countdown-label">دقائق</span></span>
       <span class="countdown-unit"><span class="countdown-value">${seconds}</span><span class="countdown-label">ثوان</span></span>
     `;
-    // 24-hour reminder
+    // تذكير قبل 24 ساعة
     if (days === 1 && hours === 0 && minutes === 0 && seconds <= 10) {
       showNotification('تذكير: الدورة القادمة تبدأ غدًا!', 'warning');
       sendWhatsAppReminders();
@@ -272,19 +267,19 @@ function startCountdown(date) {
   }, 1000);
 }
 
-// AI Suggestions
+// اقتراحات الذكاء الاصطناعي
 function loadAISuggestions() {
   const aiContent = document.getElementById('ai-content');
   const suggestions = [
-    'اقتراح: ترتيب الأعضاء بناءً على سجل الدفع الأخير.',
+    'اقتراح: رتب الأعضاء بناءً على سجل الدفع لتحسين الأداء.',
     'تنبيه: العضو أحمد محمد تأخر في الدفع 3 مرات.',
-    'اقتراح: إعادة تشغيل الجمعية بعد انتهائها تلقائيًا.'
+    'اقتراح: إعادة تشغيل الجمعية تلقائيًا بعد انتهائها.'
   ];
   aiContent.innerHTML = `<ul>${suggestions.map(s => `<li>${s}</li>`).join('')}</ul>`;
   document.getElementById('ai-suggestions').style.display = 'block';
 }
 
-// Achievements
+// الإنجازات
 function loadAchievements() {
   const achievementsGrid = document.getElementById('achievements-grid');
   const achievements = [
@@ -303,24 +298,27 @@ function loadAchievements() {
 }
 
 function checkAchievements() {
-  // Simulate achievement checks
   const totalGroups = document.getElementById('total-groups').textContent;
   if (parseInt(totalGroups) >= 5) {
     showNotification('تهانينا! حصلت على شارة "عضو نشيط"', 'success');
   }
 }
 
-// Update Stats
+// تحديث الإحصائيات
 function updateStats() {
-  document.getElementById('total-groups').textContent = parseInt(document.getElementById('total-groups').textContent) + 1;
-  document.getElementById('active-groups').textContent = parseInt(document.getElementById('active-groups').textContent) + 1;
-  document.getElementById('total-members').textContent = parseInt(document.getElementById('total-members').textContent) + parseInt(document.getElementById('group-members').value || 0);
-  document.getElementById('total-amount').textContent = parseInt(document.getElementById('total-amount').textContent) + parseInt(document.getElementById('group額').value || 0);
+  const totalGroups = document.getElementById('total-groups');
+  const activeGroups = document.getElementById('active-groups');
+  const totalMembers = document.getElementById('total-members');
+  const totalAmount = document.getElementById('total-amount');
+  totalGroups.textContent = parseInt(totalGroups.textContent) + 1;
+  activeGroups.textContent = parseInt(activeGroups.textContent) + 1;
+  totalMembers.textContent = parseInt(totalMembers.textContent) + parseInt(document.getElementById('group-members').value || 0);
+  totalAmount.textContent = parseInt(totalAmount.textContent) + parseInt(document.getElementById('group-amount').value || 0);
 }
 
-// Load Charts
+// تحميل الرسوم البيانية
 function loadCharts() {
-  // Payment Chart (Pie)
+  // رسم بياني لنسبة السداد
   const paymentCtx = document.getElementById('payment-chart').getContext('2d');
   new Chart(paymentCtx, {
     type: 'pie',
@@ -340,7 +338,7 @@ function loadCharts() {
     }
   });
 
-  // Delay Stats (Bar)
+  // رسم بياني لإحصائيات التأخير
   const delayCtx = document.getElementById('delay-stats').getContext('2d');
   new Chart(delayCtx, {
     type: 'bar',
@@ -363,7 +361,7 @@ function loadCharts() {
     }
   });
 
-  // Monthly Summary (Line)
+  // رسم بياني للملخص الشهري
   const monthlyCtx = document.getElementById('monthly-summary').getContext('2d');
   new Chart(monthlyCtx, {
     type: 'line',
@@ -385,13 +383,13 @@ function loadCharts() {
   });
 }
 
-// Initialize
+// التهيئة
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   loadAchievements();
   loadAISuggestions();
   loadCharts();
-  // Simulate a group for demo
+  // محاكاة جمعية للعرض
   addGroupToList({
     id: 1,
     name: 'جمعية عينة',
