@@ -74,7 +74,7 @@ body {
   font-size: 16px;
   cursor: pointer;
   margin: 10px 0;
-  transition: all 0.3s;
+  transición: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
